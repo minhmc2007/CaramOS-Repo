@@ -1,0 +1,28 @@
+# Maintainer: CaramOS <caramos@caramos.org>
+# Contributor: lebao3105 <lebao3105@gmail.com>
+# Source: https://github.com/lebao3105/fcitx5-lotus
+
+pkgname=fcitx5-lotus
+pkgver=1.1.4
+pkgrel=1
+pkgdesc='Vietnamese input method engine for Fcitx5 — the lotus you wait for'
+arch=('x86_64')
+url='https://github.com/lebao3105/fcitx5-lotus'
+license=('GPL3')
+depends=('fcitx5' 'libime' 'boost-libs')
+makedepends=('cmake' 'ninja' 'git' 'boost')
+source=("$pkgname-$pkgver.tar.gz::$url/archive/refs/tags/v$pkgver.tar.gz")
+sha256sums=('SKIP')
+
+build() {
+    cmake -B build -G Ninja \
+        -DCMAKE_INSTALL_PREFIX=/usr \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DENABLE_TEST=OFF
+    cmake --build build
+}
+
+package() {
+    DESTDIR="$pkgdir" cmake --install build
+    install -Dm644 "$srcdir/LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

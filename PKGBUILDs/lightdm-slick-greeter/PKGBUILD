@@ -1,0 +1,24 @@
+# Maintainer: CaramOS <caramos@caramos.org>
+
+pkgname=lightdm-slick-greeter
+pkgver=2.0.8
+pkgrel=1
+pkgdesc='A slick-looking LightDM greeter'
+arch=('x86_64')
+url='https://github.com/linuxmint/slick-greeter'
+license=('GPL3')
+depends=('lightdm' 'gtk3' 'accountsservice' 'cairo' 'libxkbcommon' 'libcanberra')
+makedepends=('meson' 'ninja' 'vala' 'glib2-devel')
+source=("$pkgname-$pkgver.tar.gz::$url/archive/refs/tags/$pkgver.tar.gz")
+sha256sums=('SKIP')
+
+build() {
+    meson setup build \
+        --prefix=/usr \
+        --buildtype=release
+    ninja -C build
+}
+
+package() {
+    DESTDIR="$pkgdir" ninja -C build install
+}

@@ -1,0 +1,23 @@
+# Maintainer: CaramOS <caramos@caramos.org>
+pkgname=cinnamon-delight-theme
+pkgver=1.0.0
+pkgrel=1
+pkgdesc='Cinnamon Delight theme — CaramOS default theme'
+arch=('any')
+url='https://github.com/DrMcC0y/Cinnamon-Delight'
+license=('GPL3')
+depends=('cinnamon' 'gnome-themes-extra')
+source=("Cinnamon-Delight.tar.gz::https://github.com/DrMcC0y/Cinnamon-Delight/archive/refs/heads/master.tar.gz"
+        "Cinnamon-Delight-Icons.tar.gz::https://github.com/DrMcC0y/Cinnamon-Delight-Icons/archive/refs/heads/master.tar.gz")
+sha256sums=('SKIP' 'SKIP')
+
+package() {
+    # Theme
+    mkdir -p "$pkgdir/usr/share/themes"
+    cp -r Cinnamon-Delight-*/Cinnamon-Delight "$pkgdir/usr/share/themes/" 2>/dev/null || \
+    find . -maxdepth 2 -type d -name "Cinnamon-Delight" -exec cp -r {} "$pkgdir/usr/share/themes/" \;
+    # Icons
+    mkdir -p "$pkgdir/usr/share/icons"
+    cp -r Cinnamon-Delight-Icons-*/Cinnamon-Delight-Icons "$pkgdir/usr/share/icons/" 2>/dev/null || \
+    find . -maxdepth 2 -type d -name "Cinnamon-Delight-Icons" -exec cp -r {} "$pkgdir/usr/share/icons/" \;
+}

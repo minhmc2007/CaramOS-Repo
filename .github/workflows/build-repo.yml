@@ -1,0 +1,56 @@
+name: Build & Deploy CaramOS Repo
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'PKGBUILDs/**'
+  workflow_dispatch:
+  schedule:
+    - cron: '0 6 * * 1'  # Weekly rebuild Monday 06:00 UTC
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: archlinux:latest
+      options: --privileged
+    steps:
+      - name: Bootstrap Arch container
+        run: |
+          pacman-key --init
+          pacman-key --populate archlinux
+          pacman -Syu --noconfirm
+          pacman -S --noconfirm base-devel git sudo
+
+      - name: Create build user
+        run: |
+          useradd -m builder && echo "builder ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          path: caramos-repo
+
+      - name: Build all packages
+        working-directory: caramos-repo
+        run: |
+          chmod +x scripts/build-and-release.sh
+          sudo -u builder ./scripts/build-and-release.sh
+
+      - name: Generate pacman repo database
+        run: |
+          cd caramos-repo/repo
+          repo-add caramos.db.tar.gz *.pkg.tar.zst
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: caramos-repo/repo
+          destination_dir: repo

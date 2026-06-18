@@ -1,0 +1,24 @@
+# Maintainer: CaramOS <caramos@caramos.org>
+# Source: AUR — zalo
+pkgname=zalo
+pkgver=26.5.10
+pkgrel=1
+pkgdesc='Zalo Desktop Client (unofficial AppImage)'
+arch=('x86_64')
+url='https://github.com/lebao3105/zalo-for-linux'
+license=('custom:zalo')
+depends=('libxss' 'libappindicator-gtk3')
+source=("Zalo-$pkgver.AppImage::https://github.com/lebao3105/zalo-for-linux/releases/download/$pkgver/Zalo-$pkgver.AppImage")
+sha256sums=('SKIP')
+
+package() {
+    install -Dm755 "$srcdir/Zalo-$pkgver.AppImage" "$pkgdir/usr/bin/zalo"
+    install -Dm644 /dev/stdin "$pkgdir/usr/share/applications/zalo.desktop" <<DESK
+[Desktop Entry]
+Name=Zalo
+Exec=zalo
+Icon=zalo
+Type=Application
+Categories=Network;Chat;
+DESK
+}

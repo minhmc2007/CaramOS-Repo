@@ -1,0 +1,20 @@
+# Maintainer: CaramOS <caramos@caramos.org>
+pkgname=caramos-keyring
+pkgver=1.0
+pkgrel=1
+pkgdesc='CaramOS PGP keyring for pacman'
+arch=('any')
+url='https://caramos.org'
+license=('GPL3')
+source=()
+sha256sums=('SKIP')
+
+package() {
+    install -d "$pkgdir/usr/share/pacman/keyrings/"
+    # Keyring files generated and added post-init
+    # caramos.gpg + caramos-trusted + caramos-revoked
+    # For now, placeholder
+    touch "$pkgdir/usr/share/pacman/keyrings/caramos.gpg"
+    touch "$pkgdir/usr/share/pacman/keyrings/caramos-trusted"
+    touch "$pkgdir/usr/share/pacman/keyrings/caramos-revoked"
+}

@@ -1,0 +1,22 @@
+# Maintainer: CaramOS <caramos@caramos.org>
+# Source: https://github.com/linuxmint/xreader
+pkgname=xreader
+pkgver=4.2.5
+pkgrel=1
+pkgdesc='A simple and lightweight document reader. X-Apps project.'
+arch=('x86_64')
+url='https://github.com/linuxmint/xreader'
+license=('GPL3')
+depends=('gtk3' 'libpeas' 'libxapp' 'poppler-glib' 'libspectre' 'djvulibre' 'webp-pixbuf-loader')
+makedepends=('meson' 'ninja' 'vala' 'itstool' 'yelp-tools')
+source=("$pkgname-$pkgver.tar.gz::$url/archive/refs/tags/$pkgver.tar.gz")
+sha256sums=('SKIP')
+
+build() {
+    meson setup build --prefix=/usr --buildtype=release
+    ninja -C build
+}
+
+package() {
+    DESTDIR="$pkgdir" ninja -C build install
+}

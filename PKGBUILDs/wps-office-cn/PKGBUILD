@@ -1,0 +1,16 @@
+# Maintainer: CaramOS <caramos@caramos.org>
+# Source: AUR — wps-office-cn
+pkgname=wps-office-cn
+pkgver=12.1.2.25882
+pkgrel=1
+pkgdesc='WPS Office for Linux (Chinese edition)'
+arch=('x86_64')
+url='https://www.wps.com/'
+license=('custom:wps')
+depends=('libcups' 'libxss' 'freetype2' 'ttf-wps-fonts')
+source=("wps-office_$pkgver.deb::https://wps-linux-personal.wpscdn.cn/wps/download/ep/Linux2023/${pkgver##*.}/wps-office_${pkgver}.AK.preread.sw.Personal_662820_amd64.deb")
+sha256sums=('SKIP')
+
+package() {
+    bsdtar -O -xf "$srcdir/wps-office_$pkgver.deb" data.tar.xz | bsdtar -C "$pkgdir" -xJf -
+}
