@@ -54,13 +54,14 @@ jobs:
           path: repo/
           retention-days: 90
 
-      - name: Publish release (delete old, create new)
-        run: |
-          git config --global --add safe.directory "$(pwd)"
-          gh release delete repo-latest --yes --cleanup-tag 2>/dev/null || true
-          gh release create repo-latest repo/* \
-            --title "CaramOS Package Repository ($(date +%Y-%m-%d))" \
-            --notes "Auto-built pacman repository for CaramOS custom packages." \
-            --latest
-        env:
-          GH_TOKEN: ${{ github.token }}
+      - name: Publish release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: repo-${{ github.run_id }}
+          name: CaramOS Package Repository (${{ github.event.repository.updated_at }})
+          body: |
+            Auto-built pacman repository for CaramOS custom packages.
+            Build triggered by ${{ github.actor }} on ${{ github.ref_type }} ${{ github.ref_name }}.
+          files: repo/*
+          fail_on_unmatched_files: false
+          make_latest: true
