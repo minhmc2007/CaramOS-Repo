@@ -38,6 +38,7 @@ jobs:
 
       - name: Build all packages
         run: |
+          chown -R builder:builder .
           chmod +x scripts/build-and-release.sh
           sudo -u builder ./scripts/build-and-release.sh
 
