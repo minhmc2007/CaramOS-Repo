@@ -23,4 +23,8 @@ build() {
 package() {
     cd "slick-greeter-$pkgver"
     DESTDIR="$pkgdir" ninja -C build install
+    # Move from /usr/sbin to /usr/bin to avoid conflict with 'filesystem' package
+    mkdir -p "$pkgdir/usr/bin"
+    mv "$pkgdir/usr/sbin/slick-greeter" "$pkgdir/usr/bin/"
+    rm -rf "$pkgdir/usr/sbin"
 }
