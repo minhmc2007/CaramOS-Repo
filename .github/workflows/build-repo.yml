@@ -27,7 +27,7 @@ jobs:
           pacman-key --init
           pacman-key --populate archlinux
           pacman -Syu --noconfirm
-          pacman -S --noconfirm base-devel git sudo
+          pacman -S --noconfirm base-devel git sudo github-cli
 
       - name: Create build user
         run: |
@@ -54,14 +54,12 @@ jobs:
           path: repo/
           retention-days: 90
 
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: repo-${{ github.run_id }}
-          name: CaramOS Package Repository (${{ github.event.repository.updated_at }})
-          body: |
-            Auto-built pacman repository for CaramOS custom packages.
-            Build triggered by ${{ github.actor }} on ${{ github.ref_type }} ${{ github.ref_name }}.
-          files: repo/*
-          fail_on_unmatched_files: false
-          generate_release_notes: false
+      - name: Publish release (delete old, create new)
+        run: |
+          gh release delete repo-latest --yes --cleanup-tag 2>/dev/null || true
+          gh release create repo-latest repo/* \
+            --title "CaramOS Package Repository ($(date +%Y-%m-%d))" \
+            --notes "Auto-built pacman repository for CaramOS custom packages." \
+            --latest
+        env:
+          GH_TOKEN: ${{ github.token }}
