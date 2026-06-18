@@ -5,14 +5,13 @@ on:
     branches: [main]
     paths:
       - 'PKGBUILDs/**'
+      - 'scripts/**'
   workflow_dispatch:
   schedule:
-    - cron: '0 6 * * 1'  # Weekly rebuild Monday 06:00 UTC
+    - cron: '0 6 * * 1'
 
 permissions:
   contents: write
-  pages: write
-  id-token: write
 
 jobs:
   build:
@@ -20,6 +19,7 @@ jobs:
     container:
       image: archlinux:latest
       options: --privileged
+
     steps:
       - name: Bootstrap Arch container
         run: |
@@ -34,23 +34,30 @@ jobs:
 
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          path: caramos-repo
 
       - name: Build all packages
-        working-directory: caramos-repo
         run: |
           chmod +x scripts/build-and-release.sh
           sudo -u builder ./scripts/build-and-release.sh
 
       - name: Generate pacman repo database
         run: |
-          cd caramos-repo/repo
+          cd repo
           repo-add caramos.db.tar.gz *.pkg.tar.zst
 
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
+      - name: Upload repo as build artifact
+        uses: actions/upload-artifact@v4
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: caramos-repo/repo
-          destination_dir: repo
+          name: caramos-repo
+          path: repo/
+          retention-days: 90
+
+      - name: Create/Update GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG_NAME="repo-$(date +%Y%m%d%H%M%S)"
+          gh release create "$TAG_NAME" repo/* \
+            --title "CaramOS Package Repository ($(date +%Y-%m-%d))" \
+            --notes "Auto-built pacman repository for CaramOS custom packages." \
+            --latest
