@@ -13,6 +13,7 @@ source=("$pkgname-$pkgver.tar.gz::$url/archive/refs/tags/$pkgver.tar.gz")
 sha256sums=('SKIP')
 
 build() {
+    cd "slick-greeter-$pkgver"
     meson setup build \
         --prefix=/usr \
         --buildtype=release
@@ -20,5 +21,6 @@ build() {
 }
 
 package() {
+    cd "slick-greeter-$pkgver"
     DESTDIR="$pkgdir" ninja -C build install
 }

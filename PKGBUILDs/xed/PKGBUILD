@@ -13,10 +13,12 @@ source=("$pkgname-$pkgver.tar.gz::$url/archive/refs/tags/$pkgver.tar.gz")
 sha256sums=('SKIP')
 
 build() {
+    cd "xed-$pkgver"
     meson setup build --prefix=/usr --buildtype=release
     ninja -C build
 }
 
 package() {
+    cd "xed-$pkgver"
     DESTDIR="$pkgdir" ninja -C build install
 }
