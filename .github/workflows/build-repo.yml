@@ -56,6 +56,7 @@ jobs:
 
       - name: Publish release (delete old, create new)
         run: |
+          git config --global --add safe.directory "$(pwd)"
           gh release delete repo-latest --yes --cleanup-tag 2>/dev/null || true
           gh release create repo-latest repo/* \
             --title "CaramOS Package Repository ($(date +%Y-%m-%d))" \
