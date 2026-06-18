@@ -8,9 +8,10 @@ arch=('x86_64')
 url='https://www.google.com/chrome/'
 license=('custom:google')
 depends=('nss' 'nspr' 'gtk3' 'libxss' 'libappindicator-gtk3' 'libcurl-gnutls')
+makedepends=('rpm-tools')
 source=("https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm")
 sha256sums=('SKIP')
 
 package() {
-    rpm2tar "$srcdir/google-chrome-stable_current_x86_64.rpm" -C "$pkgdir"
+    rpm2cpio "$srcdir/google-chrome-stable_current_x86_64.rpm" | bsdtar -C "$pkgdir" -xvf -
 }

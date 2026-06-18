@@ -7,7 +7,7 @@ arch=('any')
 url='https://caramos.org'
 license=('GPL3')
 source=()
-sha256sums=('SKIP')
+sha256sums=()
 
 package() {
     install -d "$pkgdir/usr/share/pacman/keyrings/"
